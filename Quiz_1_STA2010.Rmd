@@ -1,0 +1,275 @@
+---
+title: "quiz_1_sta2010"
+author: "Ivy Kemunto"
+date: "2023-09-29"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Question 1: (15 Marks)
+
+## Suppose you are managing a website, and you want to model the number of user registrations you receive in a given hour. You've collected historical data and found that, on average, you receive 5 user registrations per hour. You decide to use the Poisson distribution to model this phenomenon. Using R,
+
+```{r}
+# Setting the rate parameter lambda for the Poisson distribution
+lambda = 5
+lambda
+```
+
+-   Here Lambda represents the average rate at which an event occurs within a fixed interval. In this case , user registrations within an hour.
+-   5 is assigned to `lambda` as we expect on average to receive 5 users registrations per hour on the website.
+
+### 1. Calculate the probability that exactly 3 users will register in the next hour.
+
+```{r}
+prob_3_users = dpois(3, lambda)
+prob_3_users
+```
+
+-   The probability of exactly 3 users registering in the next hour is approximately 0.1403739 or about 14.04%.
+
+This means that on average it is expected about 14.04% of your hours to have exactly 3 user registrations on the website
+
+### 2. Find the probability that more than 7 users will register in the next hour.
+
+```{r}
+prob_more_than_7_users = 1 - ppois(7, lambda)
+prob_more_than_7_users
+```
+
+-   The probability of more than 7 users registering in the next hour is approximately 0.1333717 or about 13.34%.
+
+-   The calculated probability, approximately 0.1333717, represents the likelihood that in the next hour, your website will experience more than 7 user registrations based on the Poisson distribution model with a rate parameter lambda equal to 5.
+
+In other words, there is about a 13.34% chance that the number of user registrations in the next hour will exceed 7, given the historical average rate of 5 registrations per hour on your website.
+
+### 3. Plot the Probability Mass Function (PMF) and Cumulative Distribution Function (CDF) for the
+
+Poisson distribution with a rate parameter of 5.
+
+```{r}
+# First, create a sequence of values from 0 to 20 representing possible numbers of user registrations.
+x = 0:20
+
+# Calculate the Probability Mass Function (PMF) for each value in x based on a Poisson distribution with a rate parameter lambda.
+pmf= dpois(x, lambda)
+
+# Print the PMF values to check the probabilities for each value in x.
+pmf
+
+# Calculate the Cumulative Distribution Function (CDF) for each value in x based on the same Poisson distribution with a rate parameter lambda.
+cdf = ppois(x, lambda)
+
+# Print the CDF values to see the cumulative probabilities for each value in x.
+cdf
+
+# Plot the Probability Mass Function (PMF) for the Poisson distribution with a rate parameter of 5.
+plot(x, pmf, type = "h", ylim = c(0, max(pmf)), main = "Poisson PMF",
+     xlab = "Number of Registrations", ylab = "Probability")
+
+# Add points to the PMF plot to show the corresponding probability values.
+points(x, pmf, type = "p", col = "blue", pch = 19) 
+
+# Create a new plot for the Cumulative Distribution Function (CDF).
+plot(x, cdf, type = "s", col = "red", main = "Poisson CDF",
+     xlab = "Number of Registrations", ylab = "Cumulative Probability")
+
+```
+
+***PMF***
+
+-   PMF values represent the probabilities of observing a specific number of user registrations in a given hour on the website.
+
+-   *Skewness:* The PMF values exhibit a right-skewed distribution. This skewness is evident because the probabilities decrease rapidly as the number of registrations increases. The right-skewed PMF indicates that it's less likely to observe a large number of registrations in an hour, and most hours tend to have fewer registrations. This aligns with the expectation for a Poisson distribution, which is often right-skewed when the rate parameter is moderate.
+
+-   *Center of Distribution:* The peak of the PMF (the highest probability) occurs at around 5 registrations, which is equal to the rate parameter `lambda`. In the context of the Poisson distribution, the peak represents the most likely number of registrations in an hour based on historical data. This aligns with the expected value (mean) of the Poisson distribution, which is also `lambda`.
+
+-   *Probability of Rare Events:* As the number of registrations increases beyond the peak (around 5), the probabilities in the PMF decrease rapidly. This illustrates that observing a significantly higher number of registrations (e.g., 10 or more) becomes increasingly rare.
+
+-   *Normalization:* The sum of all PMF values is equal to 1, reflecting the fact that one of the possible numbers of registrations (0 to 20 in this case) must occur in any given hour.
+
+***CDF***
+
+-   CDF values represent the cumulative probabilities of observing up to a certain number of user registrations.
+
+-   *Skewness:* The CDF shows a typical right-skewed pattern. It starts with a low cumulative probability for small counts and gradually increases, reaching closer to 1 as the number of registrations grows.The right-skewed CDF confirms the right-skewed nature of the distribution. It signifies that, in most cases, the cumulative probability of having fewer registrations is high, and as the number of registrations increases, the cumulative probability rises. This suggests that observing a substantial number of registrations is less common.
+
+-   *Cumulative Probability:* The CDF values show that the cumulative probability increases gradually with the number of registrations. This implies that as you move along the x-axis from left to right, the likelihood of observing more registrations than a given count also increases. For example, the CDF value at 10 registrations (approximately 0.986) indicates that there's a high probability (about 98.6%) of observing 10 or fewer registrations in an hour.
+
+-   *Tail Behavior:* The CDF values approach 1 as you move further to the right on the x-axis, indicating that extremely high registration counts (e.g., 20) are extremely unlikely. This reflects the long right tail of the Poisson distribution, where the probability of rare, extreme events decreases rapidly.
+
+***Overall comments on both PMF and CDF***
+
+-   *Symmetry (In relation to the peak)* While the distribution is right-skewed, it also exhibits a certain degree of symmetry around the peak.This symmetry is a characteristic feature of the Poisson distribution, where the probabilities on either side of the peak are approximately equal.
+
+### 4. Simulate 1000 random Poisson-distributed values with a rate parameter of 5 in R and create a histogram. Compare it with the true PMF.
+
+```{r}
+# Set a seed for reproducibility
+set.seed(123)
+
+# Simulate Poisson data
+simulated_data = rpois(1000, lambda)
+
+# Create a sequence of values for the x-axis
+x = 0:20
+
+# Calculate the Probability Mass Function (PMF) for the Poisson distribution with a rate parameter of 5.
+pmf = dpois(x, lambda)
+
+# Setting up a layout with two columns for side-by-side plots
+par(mfrow = c(1, 2))
+
+# Creating the first plot for the histogram
+hist(simulated_data, breaks = 0:20 - 0.5, prob = TRUE, col = "blue",
+     main = "Simulated Data Histogram",
+     xlab = "Number of Registrations", ylab = "Probability")
+
+# Creating the second plot for the true PMF
+plot(x, pmf, type = "h", col = "red",
+     main = "True PMF",
+     xlab = "Number of Registrations", ylab = "Probability")
+
+# Creating plot that combines true pf and histogram for better inference
+par(mfrow = c(1, 1))
+
+plot(x, pmf, type = "n", ylim = c(0, max(pmf)), main = "Simulated Poisson Data vs. True PMF",
+     xlab = "Number of Registrations", ylab = "Probability")
+lines(x, pmf, type = "h", col = "red")
+hist(simulated_data, breaks = 0:20 - 0.5, prob = TRUE, col = "blue", add = TRUE)
+```
+
+***To compare:***
+
+-   The true PMF gives us the expected theoretical probabilities for each value.
+
+-   The histogram values show the observed frequencies in the simulated data.
+
+When we compare the true PMF (theoretical expectations) with the histogram (simulated data), here's what we can infer:
+
+*Shape Comparison:* The true PMF and the Histogram are showing a similar shape. This means that the simulated data closely resembles what we would expect based on the Poisson distribution with a rate parameter of 5. The shape similarity suggests that the simulation is capturing the underlying probability distribution accurately.
+
+*Accuracy Assessment:* The close match between the true PMF and the histogram indicates that the simulation is consistent with the theoretical expectations. This is an important validation step in statistics and probability modeling. It suggests that your simulation process, which uses a Poisson distribution with λ = 5, is correctly generating data that follows the expected distribution.
+
+The comparison between the true PMF and the histogram also shows how closely the observed data align with the theoretical Poisson distribution. When the behavior of the Poisson distribution is well-represented by the histogram, it suggests that the random process generating the data behaves similarly to a Poisson process with the specified rate parameter.
+
+## Imagine a basketball player practicing free throws. They have a 70% success rate, meaning they have a
+
+70% chance of making any given free throw. Using R,
+
+### 1. Calculate the probability that the player will make their first free throw.
+
+```{r}
+# Success probability
+p_success = 0.7
+
+# Probability of making the first free throw
+prob_first_throw = p_success
+prob_first_throw
+```
+
+-   The basketball player will successfully make their first free throw. With a success rate of 70%, the player has a 70% chance of making the first free throw in any given attempt. This probability reflects the player's skill and consistency in free-throw shooting, indicating a relatively high likelihood of success in the initial throw.
+
+### 2. Determine the probability that the player will need at least 5 attempts to make a successful free
+
+throw.
+
+```{r}
+# Probability of needing at least 5 attempts
+prob_at_least_5_attempts = 1 - pgeom(4, p_success)
+prob_at_least_5_attempts
+
+```
+
+-   Given the player's 70% success rate, there is a relatively low probability of not succeeding in the first 4 attempts. Therefore, the player is likely to make a successful free throw within the first few attempts. The calculated probability of needing at least 5 attempts is approximately 0.00243, indicating that this event is relatively rare under the given success rate conditions.
+
+### 3. Plot the Probability Mass Function (PMF) and Cumulative Distribution Function (CDF) for the
+
+geometric distribution with a success probability of 0.7.
+
+```{r}
+# Create a sequence of values from 0 to 25 representing possible numbers of trials.
+x = 0:20
+
+# Calculate the Probability Mass Function (PMF) for each value in x based on a geometric distribution with a success probability p_success.
+pmf = dgeom(x, p_success)
+
+# Print the PMF values to check the probabilities for each value in x.
+pmf
+
+# Calculate the Cumulative Distribution Function (CDF) for each value in x based on the same geometric distribution with a success probability p_success.
+cdf = pgeom(x, p_success)
+
+# Print the CDF values to see the cumulative probabilities for each value in x.
+cdf
+
+# Plot the Probability Mass Function (PMF) for the geometric distribution with a success probability of p_success.
+plot(x, pmf, type = "h", ylim = c(0, max(pmf)), main = "Geometric Distribution PMF",
+     xlab = "Number of Trials", ylab = "Probability")
+
+# Add points to the PMF plot to show the corresponding probability values.
+points(x, pmf, type = "p", col = "blue", pch = 19)
+
+# Create a new plot for the Cumulative Distribution Function (CDF).
+plot(x, cdf, type = "s", col = "red", main = "Geometric Distribution CDF",
+     xlab = "Number of Trials", ylab = "Cumulative Probability")
+
+```
+
+***PMF*** - The sequence of values x represents the possible numbers of trials needed for a basketball player with a 70% success rate to make their first successful free throw.
+
+-   Each PMF value in the output corresponds to a specific value of x and represents the probability of achieving success (making a free throw) on that particular trial.
+
+-   The first PMF value (0.7) corresponds to the probability of making the first free throw on the initial attempt (trial 1). This value is highest because it represents the player's chance of succeeding on the first try.
+
+-   As we move to subsequent PMF values, such as 0.21 for trial 2, 0.063 for trial 3, and so on, these values progressively decrease. This indicates that the likelihood of making the first successful free throw decreases as the number of trials increases.
+
+***CDF***
+
+ - Each CDF value in the output corresponds to a specific value of x and represents the cumulative probability of achieving success within that number of trials or fewer.
+
+-   The first CDF value (0.7) corresponds to the probability of making the first free throw on or before the initial attempt (trial 1). This value is highest because it represents the player's chance of succeeding on the first try.
+
+-   As we move to subsequent CDF values, such as 0.91 for trial 2, 0.973 for trial 3, and so on, these values progressively increase. This indicates that the cumulative probability of making the first successful free throw increases as the number of trials increases.
+
+### 4. Simulate 1000 random geometrically-distributed values with a success probability of 0.7 in R and create a histogram. Compare it with the true PMF.
+
+```{r}
+# Set a seed for reproducibility
+set.seed(123)
+
+# Define the success probability
+p_success <- 0.7
+
+# Simulate 1000 random geometrically-distributed values
+simulated_data <- rgeom(1000, p_success)
+
+# Determine the range of values in the simulated data
+data_range <- range(simulated_data)
+
+# Create a sequence of values for the histogram breaks
+breaks <- seq(data_range[1] - 0.5, data_range[2] + 0.5, by = 1)
+
+# Calculate the Probability Mass Function (PMF) for the geometric distribution with p_success
+pmf <- dgeom(0:max(simulated_data), p_success)
+
+# Create a histogram of the simulated data with adjusted breaks
+hist_values <- hist(simulated_data, breaks = breaks, prob = TRUE, col = "blue", main = "Simulated Geometric Data vs. True PMF",
+     xlab = "Number of Trials", ylab = "Probability")
+
+# Plot the true PMF as a red step function
+lines(0:max(simulated_data), pmf, type = "s", col = "red")
+
+# Add a legend
+legend("topright", legend = c("True PMF", "Simulated Data"), col = c("red", "blue"), lty = 1)
+
+```
+
+-   In both the histogram and the PMF, you can see that the probability is highest for a small number of trials (near 0) and gradually decreases as the number of trials increases. This pattern is consistent with the behavior of a geometric distribution. In this context, it means that there's a relatively high chance of success (making a free throw) on the first few attempts, and the probability decreases as the player requires more attempts.
+
+-   The similarity between the histogram and the true PMF indicates that the simulated data aligns with the theoretical expectations based on the geometric distribution. It suggests that the simulated data is a reasonable representation of the random process in which the basketball player makes free throws.
